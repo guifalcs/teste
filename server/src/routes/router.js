@@ -2,39 +2,6 @@ const express = require('express')
 const router = express.Router()
 const Task = require('../models/tarefas')
 
-// tarefas = [
-//     {
-//       titulo: 'Estudar Node JS',
-//       descricao: "Preciso aprender a criar um servidor backend utilizando Node.js, conectá-lo ao MySQL para gerenciar dados e alimentar o frontend, garantindo que as informações sejam transmitidas de forma eficiente.",
-//       dataCriacao: '3/10/24'
-//     },
-//     {
-//       titulo: 'Praticar Git',
-//       descricao: "Preciso aprender a criar um servidor backend utilizando Node.js, conectá-lo ao MySQL para gerenciar dados e alimentar o frontend, garantindo que as informações sejam transmitidas de forma eficiente.",
-//       dataCriacao: '3/10/24'
-//     },
-//     {
-//       titulo: 'Finalizar projeto de frontend',
-//       descricao: "Preciso aprender a criar um servidor backend utilizando Node.js, conectá-lo ao MySQL para gerenciar dados e alimentar o frontend, garantindo que as informações sejam transmitidas de forma eficiente.",
-//       dataCriacao: '3/10/24'
-//     },
-//     {
-//       titulo: 'Ler um livro sobre design de software',
-//       descricao: "Escolher um livro que aborde padrões de design e boas práticas na construção de software.",
-//       dataCriacao: '3/10/24'
-//     },
-//     {
-//       titulo: 'Fazer um curso de APIs REST',
-//       descricao: "Encontrar um curso online que ensine a criar e consumir APIs RESTful, aplicando conceitos de segurança.",
-//       dataCriacao: '3/10/24'
-//     },
-//     {
-//       titulo: 'Configurar ambiente de desenvolvimento',
-//       descricao: "Instalar e configurar o Visual Studio Code, extensões necessárias e ferramentas para desenvolvimento eficiente.",
-//       dataCriacao: '3/10/24'
-//     }
-//   ]
-
   router.get('/tasks', async (req, res) => {
     try {
       const tarefas = await Task.findAll();
@@ -51,6 +18,20 @@ const Task = require('../models/tarefas')
       res.status(201).json(novaTarefa);
     } catch (error) {
       res.status(500).json({ error: 'Erro ao criar tarefa' });
+    }
+  });
+
+  router.delete('/tasks/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+      const tarefa = await Task.findByPk(id);
+      if (!tarefa) {
+        return res.status(404).json({ error: 'Tarefa não encontrada' });
+      }
+      await tarefa.destroy();
+      res.json({ message: 'Tarefa excluída com sucesso' });
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao excluir tarefa' });
     }
   });
 
