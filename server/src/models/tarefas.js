@@ -21,8 +21,7 @@ const Task = sequelize.define('Task', {
     defaultValue: DataTypes.NOW,
   },
 }, {
-  // Opções do modelo
-  tableName: 'tasks', // Nome da tabela no banco de dados
+  tableName: 'tasks', 
 });
 
 module.exports = Task;

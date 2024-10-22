@@ -1,9 +1,9 @@
 module.exports = {
     development: {
-      username: "ti-1562",
-      password: "Gui89207332#",
-      database: "listaTarefas",
-      host: "localhost",
-      dialect: "mysql",
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,  
+      database: process.env.DB_NAME,
+      host: process.env.DB_HOST,
+      dialect: process.env.DB_DIALECT,
     },
   };
