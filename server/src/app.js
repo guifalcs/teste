@@ -1,24 +1,32 @@
-require("dotenv").config();
-const express = require("express");
-const router = require("./routes/router.js");
-const cors = require("cors");
-const sequelize = require("./db.js");
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import sequelize from "./db.js"; 
+import router from "./routes/router.js";
 
-const app = express();
+dotenv.config();
 
- app.use(express.json());
- app.use(cors());
- app.use(router);
+const app = express(); 
+const routes = router
+const corsMiddleware = cors(); 
 
- // Sincronizando o banco de dados
- sequelize.sync()
-   .then(() => {
-     console.log('Banco de dados sincronizado!');
-   })
-   .catch((error) => {
-     console.error('Erro ao sincronizar o banco de dados:', error);
-   });
+app.use(express.json()); 
+app.use(corsMiddleware); 
+app.use('/api',routes); 
 
- app.listen(process.env.DB_PORT, () => {
-  console.log(`Servidor rodando na porta ${process.env.DB_PORT}!`);
- });
+const connectWithRetry = async () => {
+  try {
+    await sequelize.sync(); 
+    console.log('Banco de dados sincronizado!');
+  } catch (error) {
+    console.error('Erro ao sincronizar o banco de dados:', error);
+    setTimeout(connectWithRetry, 3000); 
+  }
+};
+
+connectWithRetry();
+
+const port = process.env.PORT || 8081;
+app.listen(port, () => {
+  console.log(`Servidor rodando na porta ${port}!`);
+});

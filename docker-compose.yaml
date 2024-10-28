@@ -1,0 +1,60 @@
+version: "3.9"
+services:
+  servidor-mysql-compose:
+    container_name: servidor-mysql-compose
+    image: servidortarefas
+    ports:
+      - "8082:8081"
+    environment:
+      PORT: 8081  
+      DB_USER: ti-1562
+      DB_PASS: "Gui89207332#"
+      DB_NAME: listaTarefas
+      DB_HOST: mysql  
+      DB_DIALECT: mysql
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    networks:
+      - tarefasnetwork
+    depends_on:
+      - mysql
+
+  cliente-angular-compose:
+    container_name: cliente-angular-compose
+    image: clientetarefas
+    ports:
+      - "80:80"
+    environment:
+      apiKey: http://localhost:8081/api/tasks
+    restart: always
+    networks:
+      - tarefasnetwork 
+    depends_on:
+      - servidor-mysql-compose
+    build: 
+      context: ./listaTarefas
+      dockerfile: Dockerfile
+    volumes:
+      - ./listaTarefas:/app
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root  
+      MYSQL_DATABASE: listaTarefas        
+      MYSQL_USER: ti-1562                   
+      MYSQL_PASSWORD: Gui89207332#          
+    ports:
+      - "3307:3306"  
+    networks:
+      - tarefasnetwork
+    volumes:
+      - mysql_data:/var/lib/mysql 
+
+networks:
+  tarefasnetwork:
+    driver: bridge
+
+volumes:
+  mysql_data:

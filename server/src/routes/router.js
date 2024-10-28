@@ -1,6 +1,7 @@
-const express = require('express')
+import express from 'express';
+import Task from '../models/tarefas.js';
+
 const router = express.Router()
-const Task = require('../models/tarefas')
 
   router.get('/tasks', async (req, res) => {
     try {
@@ -52,4 +53,4 @@ const Task = require('../models/tarefas')
     }
   });
 
-module.exports = router
+export default router;
